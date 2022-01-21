@@ -1,6 +1,11 @@
 # global-colorscheme
 Independent global colorscheme switcher for any GNU/Linux distribution. Main goal of this project is easy addition of an application for coloring and default/custom color schemes.
 
+# Script Usage
+Just make script executable and run it `global-colorscheme.lua [themeName]`. The theme will be changed for all supported applications which are installed in the station. These applications have to be installed and configured with appropriate supported themes, more descriptions are provided in the next chapter (how to configure it).
+
+ThemeNames are unified for all applications. This parameter `themeName` checks directly in the script. Configuration with lua is trivial, you can very easily add your additional color schemes or add next applications. Just create fork of this project and extends the configuration. PR will be good too ;-)
+
 # Supported Applications
 ## Kitty
 * Link for theme url: https://sw.kovidgoyal.net/kitty/kittens/themes/
