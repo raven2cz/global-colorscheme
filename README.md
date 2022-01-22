@@ -85,3 +85,10 @@ kitty +kitten themes --reload-in=all [ThemeName]
 * Restore your atom plugins with cli: `apm install --packages-file ~/.atom/package.list`
 * Inside this github project is attached `atom/package.list` for atom with all required colorthemes which are used with color script.
 * Sometimes plugins are changes, it is very active repository. Just make fork and modify it and create PR for it.
+* Add file `styles.less` to your `~/.atom` with this content
+
+```css
+.tree-view {
+  font-size: 14px;
+}
+```
