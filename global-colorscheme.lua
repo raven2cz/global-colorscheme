@@ -8,65 +8,132 @@ local sel_sc = params[1]
 local colorschemes = {
   dracula = {
     kitty = "Dracula",
-    alacritty = "dracula.yaml"
+    alacritty = "dracula.yaml",
+    emacs = "doom-dracula",
+    atom = '      "dracula-ui"\n      "dracula-syntax"\n',
   },
   doom_one = {
     kitty = "Atom",
-    alacritty = "doom_one.yml"
+    alacritty = "doom_one.yml",
+    emacs = "doom-one",
+    atom = '      "one-dark-ui"\n      "one-dark-syntax"\n',
   },
   darcula = {
     kitty = "Jet Brains Darcula",
-    alacritty = "darcula.yaml"
+    alacritty = "darcula.yaml",
+    emacs = "doom-one",
+    atom = '      "intellij-idea-darcula-ui"\n      "darcula-syntax"\n',
   },
   eighties_one_dark = {
     kitty = "Dark Pastel",
-    alacritty = "dark_pastels.yaml"
+    alacritty = "dark_pastels.yaml",
+    emacs = "doom-one",
+    atom = '      "one-dark-ui"\n      "base16-eighties-one-dark"\n',
   },
   gruvbox_dark_soft = {
     kitty = "Gruvbox Dark",
-    alacritty = "gruvbox_dark.yaml"
+    alacritty = "gruvbox_dark.yaml",
+    emacs = "doom-gruvbox",
+    atom = '      "one-dark-ui"\n      "gruvbox-plus-syntax"\n',
   },
   gruvbox_light_soft = {
     kitty = "Gruvbox Light",
-    alacritty = "gruvbox_light.yaml"
+    alacritty = "gruvbox_light.yaml",
+    emacs = "doom-gruvbox-light",
+    atom = '      "one-dark-ui"\n      "gruvbox-plus-syntax"\n',
   },
   material_palenight = {
     kitty = "Oceanic Material",
-    alacritty = "palenight.yml"
+    alacritty = "palenight.yml",
+    emacs = "doom-palenight",
+    atom = '      "one-dark-ui"\n      "material-palenight-syntax"\n',
   },
   material = {
     kitty = "Material Dark",
-    alacritty = "material_theme.yaml"
+    alacritty = "material_theme.yaml",
+    emacs = "doom-material",
+    atom = '      "atom-material-ui"\n      "atom-material-syntax"\n',
   },
   monokai_pro = {
-    kitty = "Monokai Pro (filter Machine)",
-    alacritty = "dark_pastels.yaml"
+    kitty = "Monokai Pro",
+    alacritty = "dark_pastels.yaml",
+    emacs = "doom-monokai-pro",
+    atom = '      "one-dark-ui"\n      "one-monokai"\n',
   },
   nord = {
     kitty = "Nord",
-    alacritty = "nord.yaml"
+    alacritty = "nord.yaml",
+    emacs = "doom-nord",
+    atom = '      "nord-atom-ui"\n      "nord-atom-syntax"\n',
   },
   oceanic_next = {
     kitty = "Oceanic Material",
-    alacritty = "oceanic_next.yaml"
+    alacritty = "oceanic_next.yaml",
+    emacs = "doom-oceanic-next",
+    atom = '      "one-dark-ui"\n      "oceanic-next"\n',
   },
   one_dark = {
     kitty = "One Dark",
-    alacritty = "one_dark.yaml"
+    alacritty = "one_dark.yaml",
+    emacs = "doom-one",
+    atom = '      "one-dark-ui"\n      "one-dark-syntax"\n',
   },
   solarized_dark = {
     kitty = "Solarized Dark - Patched",
-    alacritty = "solarized_dark.yaml"
+    alacritty = "solarized_dark.yaml",
+    emacs = "doom-solarized-dark",
+    atom = '      "one-dark-ui"\n      "solarized-dark-syntax"\n',
   },
   solarized_light = {
     kitty = "Solarized Light",
-    alacritty = "solarized_light.yaml"
+    alacritty = "solarized_light.yaml",
+    emacs = "doom-solarized-light",
+    atom = '      "solarized-one-light-ui"\n      "solarized-light-syntax"\n',
   },
   tomorrow_night = {
     kitty = "Tomorrow Night Eighties",
-    alacritty = "tomorrow_night.yaml"
+    alacritty = "tomorrow_night.yaml",
+    emacs = "doom-tomorrow-night",
+    atom = '      "one-dark-ui"\n      "tomorrow-night-eighties-syntax"\n',
   },
 }
+
+local function writeToFile(resource, content)
+  local file = assert(io.open(resource, "w"))
+  file:write(content)
+  file:close()
+end
+
+local function loadFromFile(resource)
+  local file = assert(io.open(resource, "r"))
+  local content = file:read("*a")
+  file:close()
+  return content
+end
+
+local function atom_cs(scheme)
+  local homeDir = os.getenv("HOME")
+  local content = loadFromFile(homeDir.."/.atom/config.cson")
+  local sidx = string.find(content, "themes: [", nil, true)
+  if sidx == nil then
+    sidx = string.find(content, "core:")
+    if sidx == nil then return end
+    content = content:sub(1,sidx+5).."    themes: [\n"..scheme.."    ]\n"..content:sub(sidx+6)
+  else
+    local eidx = string.find(content, "]", sidx + 1, true)
+    content = content:sub(1,sidx+9)..scheme..content:sub(eidx-4)
+  end
+  writeToFile(homeDir.."/.atom/config.cson", content)
+end
+
+if sel_sc == "list" then
+  print("Available colorschemes:")
+  local tkeys = {}
+  for k in pairs(colorschemes) do table.insert(tkeys, k) end
+  table.sort(tkeys)
+  for _, k in ipairs(tkeys) do print(k) end
+  return
+end
 
 local found = false
 for colorId,apps in pairs(colorschemes) do
@@ -82,6 +149,12 @@ for colorId,apps in pairs(colorschemes) do
       -- ALACRITTY
       elseif appId == "alacritty" then
         os.execute("alacritty-colorscheme -V apply "..cs)
+      -- DOOM EMACS
+      elseif appId == "emacs" then
+        os.execute('sed -i "/(load-theme/c\\(load-theme \''..cs..' t)" /home/box/.config/doom/config.el')
+      -- ATOM
+      elseif appId == "atom" then
+        atom_cs(cs)
       end
     end
     break
