@@ -91,4 +91,13 @@ kitty +kitten themes --reload-in=all [ThemeName]
 .tree-view {
   font-size: 14px;
 }
+.tab-bar .tab {
+  font-size: 13px;
+}
+.github-Git {
+  font-size: 13px;
+}
+.btn {
+  font-size: 13px;
+}
 ```
