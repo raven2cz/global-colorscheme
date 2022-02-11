@@ -38,7 +38,7 @@ kitty +kitten themes --reload-in=all [ThemeName]
   REPO="https://github.com/aaron-williamson/base16-alacritty.git"
   DEST="$HOME/.aarors-williamson-colorschemes"
 
-  # Get colorschemes
+  # Get colorschemes`
   git clone $REPO $DEST
   # Create symlink at default colors location (optional)
   ln -s "$DEST/colors" "$HOME/.config/alacritty/colors"
@@ -101,3 +101,13 @@ kitty +kitten themes --reload-in=all [ThemeName]
   font-size: 13px;
 }
 ```
+## Neovim
+My configuration of neovim is inherited from Github project `LunarVim/Neovim-from-scratch`. All necessary themes and configuration is added and extended this global theme script for changes. My project is available here:
+
+`https://github.com/raven2cz/neovim`
+
+You can clone it by command: `git clone git@github.com:raven2cz/neovim.git`
+
+After cloning. Delete your packer direcotry from `~/.local/share/nvim/site/pack/packer`. The plugins and whole settings will be re-created automatically, see `plugins.lua` inside the project.
+
+I used some better changes for some themes. It is my personal preference, because several neovim themes like fox, or everforest are better against traditional themes. But it still keep some theme color principles like selected one.
